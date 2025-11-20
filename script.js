@@ -85,3 +85,47 @@ switchMode.addEventListener('change', function () {
 		document.body.classList.remove('dark');
 	}
 })
+
+// fixed download button script
+const downloadBtn = document.querySelector('.btn-download');
+
+downloadBtn.addEventListener('click', function() {
+    const element = document.querySelector('main'); 
+
+    const originalOverflow = element.style.overflow;
+    const originalMaxHeight = element.style.maxHeight;
+
+    element.style.overflow = 'visible';
+    element.style.maxHeight = 'none';
+
+    const opt = {
+      margin:       0.5,
+      filename:     'DataDeck-Report.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 }, 
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] } 
+    };
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        element.style.overflow = originalOverflow;
+        element.style.maxHeight = originalMaxHeight;
+    });
+});
+
+const searchInput = document.querySelector('.form-input input');
+const tableRows = document.querySelectorAll('table tbody tr');
+
+searchInput.addEventListener('keyup', function() {
+    const searchValue = this.value.toLowerCase();
+
+    tableRows.forEach(row => {
+        const name = row.querySelector('td p').innerText.toLowerCase();
+        
+        if(name.includes(searchValue)) {
+            row.style.display = ''; 
+        } else {
+            row.style.display = 'none'; 
+        }
+    })
+});
